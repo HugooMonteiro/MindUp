@@ -1,0 +1,53 @@
+# Dependências
+node_modules/
+*/node_modules/
+
+# Variáveis de ambiente (NUNCA ENVIAR!)
+.env
+*/.env
+.env.local
+.env.development
+.env.production
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Sistema Operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Builds
+build/
+dist/
+*.tgz
+
+# Outros
+.cache/
+coverage/
+.nyc_output/
