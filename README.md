@@ -1,156 +1,146 @@
-Aplicativo mobile para registro diário de pensamentos, feed comunitário e suporte emocional.
-Sobre • Funcionalidades • Tecnologias • Instalação • Como Usar
-</div>
+# MindUp
 
-📱 Sobre
-O MindUp é um aplicativo mobile desenvolvido para ajudar pessoas a cuidarem da sua saúde mental através de:
+Aplicativo mobile para registro diário de pensamentos, feed comunitário e apoio emocional entre usuários.
 
-📝 Registro Diário: Espaço privado para expressar pensamentos e sentimentos
-🌟 Feed Comunitário: Compartilhe experiências positivas e apoie outras pessoas
-💬 Interações Sociais: Sistema de curtidas e comentários
-🔒 Privacidade: Dados criptografados e protegidos
+## Sobre
 
-✨ Funcionalidades
-✅ Implementadas
+O MindUp ajuda as pessoas a cuidarem da saúde mental no dia a dia:
 
- Sistema completo de autenticação (Cadastro, Login, Recuperação de senha)
- Validações robustas em múltiplas camadas
- Registro diário privado por usuário
- Feed comunitário com posts públicos
- Sistema de curtidas (1 por usuário)
- Sistema de comentários
- Senhas criptografadas com bcrypt
- Autenticação JWT
- Banco de dados MongoDB Atlas (cloud)
- API RESTful completa
- Interface responsiva e intuitiva
+- **Registro diário:** espaço privado para escrever pensamentos e sentimentos
+- **Feed comunitário:** compartilhe experiências positivas e apoie outras pessoas
+- **Interações:** curtidas e comentários nos posts
+- **Privacidade:** cada registro diário só aparece para o seu autor
 
- 🛠️ Tecnologias
-Frontend
+> O MindUp não substitui acompanhamento psicológico ou médico.
 
-React Native
-Expo
-JavaScript
+## Funcionalidades
 
-Backend
+- Cadastro, login e recuperação de senha
+- Validações no app e na API
+- Registro diário privado por usuário
+- Feed com posts públicos
+- Curtidas (uma por usuário) e comentários
+- API RESTful com banco MongoDB Atlas na nuvem
 
-Node.js
-Express.js
-MongoDB + Mongoose
-JWT (jsonwebtoken)
-bcrypt
-CORS
+## Tecnologias
 
-Infraestrutura
+| Camada | Tecnologias |
+| --- | --- |
+| App | React Native, Expo, JavaScript |
+| API | Node.js, Express, Mongoose, JWT (`jsonwebtoken`), bcrypt, CORS |
+| Banco de dados | MongoDB Atlas |
 
-MongoDB Atlas (Cloud Database)
+## Como rodar
 
-📦 Instalação
-Pré-requisitos
+Pré-requisitos: Node.js (versão LTS recente), npm ou yarn, uma conta gratuita no MongoDB Atlas e, para testar no celular, o app Expo Go.
 
-Node.js (v14 ou superior)
-npm ou yarn
-Conta no MongoDB Atlas
-Expo Go (para testar no celular)
+### 1. Clonar o repositório
 
-1. Clonar repositório
- git clone https://github.com/seu-usuario/mindup-app.git
-cd mindup-app
+```bash
+git clone https://github.com/HugooMonteiro/MindUp.git
+cd MindUp
+```
 
-2. Configurar Backend
+### 2. Configurar e iniciar a API
+
+```bash
 cd backend
 npm install
+```
 
-Crie um arquivo .env na pasta backend:
+Crie um arquivo `.env` na pasta `backend` (use o `.env.example` como modelo):
+
+```
 PORT=3000
 MONGODB_URI=sua_connection_string_do_mongodb_atlas
-JWT_SECRET=sua_chave_secreta_jwt
+JWT_SECRET=uma_chave_secreta_longa
+```
 
-Como obter o MongoDB URI:
+Para obter a `MONGODB_URI`: crie um cluster gratuito no MongoDB Atlas, crie um usuário do banco e copie a connection string em **Connect**.
 
-Acesse MongoDB Atlas
-Crie um cluster gratuito
-Crie um usuário do banco
-Pegue a connection string em "Connect" → "Connect your application"
-
-Inicie o backend:
+```bash
 npm run dev
+```
 
-3. Configurar Frontend
-Abra outro terminal:
+### 3. Configurar e iniciar o app
+
+Em outro terminal:
+
+```bash
 cd frontend
 npm install
+```
 
-Edite frontend/services/api.js e configure o endereço da API:
-// Para testes no navegador:
+Em `frontend/services/api.js`, defina o endereço da API:
+
+```js
+// Navegador:
 const API_URL = 'http://localhost:3000/api';
 
-// Para testes no celular, use o IP da sua máquina:
-const API_URL = 'http://192.168.x.x:3000/api';
+// Celular (use o IP da sua máquina na rede):
+// const API_URL = 'http://192.168.x.x:3000/api';
+```
 
-Inicie o frontend:
+```bash
 npx expo start
+```
 
-🚀 Como Usar
-1. Testar no navegador
-Aperte w no terminal do Expo
-2. Testar no celular
+Aperte `w` para abrir no navegador, ou escaneie o QR Code com o Expo Go.
 
-Instale o app Expo Go (Android / iOS)
-Escaneie o QR Code que aparece no terminal
+## Como usar
 
-3. Fluxo de uso
+1. Cadastre-se e faça login
+2. Crie seu primeiro registro diário
+3. Publique algo no feed comunitário
+4. Curta e comente os posts de outras pessoas
 
-Cadastre-se no app
-Faça login
-Crie seu primeiro registro diário
-Publique algo no feed comunitário
-Curta e comente posts de outros usuários
+## Estrutura do projeto
 
-📂 Estrutura do Projeto
-mindup-app/
+```
+MindUp/
 ├── backend/
 │   ├── src/
-│   │   ├── models/      # Schemas do MongoDB
-│   │   ├── routes/      # Endpoints da API
-│   │   └── server.js    # Servidor principal
-│   ├── .env.example     # Modelo de variáveis de ambiente
+│   │   ├── models/      schemas do MongoDB
+│   │   ├── routes/      endpoints da API
+│   │   └── server.js    servidor principal
+│   ├── .env.example     modelo de variáveis de ambiente
 │   └── package.json
-│
-├── frontend/
-│   ├── services/
-│   │   └── api.js       # Chamadas à API
-│   ├── assets/          # Imagens e ícones
-│   ├── App.js           # Componente principal
-│   └── package.json
-│
-└── README.md
+└── frontend/
+    ├── services/api.js  chamadas à API
+    ├── assets/          imagens e ícones
+    ├── App.js           componente principal
+    └── package.json
+```
 
-🔐 Segurança
+## Segurança
 
-✅ Senhas criptografadas com bcrypt (salt rounds: 10)
-✅ Autenticação via JWT (expiração: 7 dias)
-✅ Validações em múltiplas camadas (frontend + backend)
-✅ CORS configurado
-✅ Variáveis de ambiente para dados sensíveis
-✅ Dados privados filtrados por usuário
+- Senhas guardadas como hash com bcrypt (10 rounds)
+- Autenticação com JWT (expira em 7 dias)
+- Validações no app e na API
+- CORS configurado
+- Segredos em variáveis de ambiente, fora do repositório
+- Registros privados filtrados por usuário
 
-📊 API Endpoints
-Autenticação
-POST /api/auth/register  - Cadastrar usuário
-POST /api/auth/login     - Fazer login
-POST /api/auth/recover   - Recuperar senha
+## API
 
-Registro Diário
-POST   /api/diary          - Criar registro
-GET    /api/diary/:userId  - Listar registros do usuário
-DELETE /api/diary/:id      - Deletar registro
+| Método | Rota | Descrição |
+| --- | --- | --- |
+| POST | `/api/auth/register` | Cadastrar usuário |
+| POST | `/api/auth/login` | Fazer login |
+| POST | `/api/auth/recover` | Recuperar senha |
+| POST | `/api/diary` | Criar registro diário |
+| GET | `/api/diary/:userId` | Listar registros do usuário |
+| DELETE | `/api/diary/:id` | Apagar registro |
+| POST | `/api/posts` | Criar post |
+| GET | `/api/posts` | Listar posts |
+| POST | `/api/posts/:id/like` | Curtir ou descurtir |
+| POST | `/api/posts/:id/comment` | Comentar |
+| DELETE | `/api/posts/:id` | Apagar post |
 
-Feed
-POST   /api/posts              - Criar post
-GET    /api/posts              - Listar posts
-POST   /api/posts/:id/like     - Curtir/Descurtir
-POST   /api/posts/:id/comment  - Adicionar comentário
-DELETE /api/posts/:id          - Deletar post
+## Prints
 
+<!-- Futuramente -->
 
+## Autor
+
+Hugo de Oliveira Monteiro — [LinkedIn](https://www.linkedin.com/in/hugo-de-oliveira-monteiro-78ba39291)
