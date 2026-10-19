@@ -24,6 +24,27 @@ function descobrirApiUrl() {
 
 const API_URL = descobrirApiUrl();
 
+// ==========================================
+// TOKEN (guardado só na memória enquanto o app está aberto)
+// ==========================================
+
+let authToken = null;
+
+// Chamado no login (com o token) e no logout (com null)
+export const setAuthToken = (token) => {
+  authToken = token || null;
+};
+
+function headersJson() {
+  const headers = { 'Content-Type': 'application/json' };
+  if (authToken) headers.Authorization = `Bearer ${authToken}`;
+  return headers;
+}
+
+function headersAuth() {
+  return authToken ? { Authorization: `Bearer ${authToken}` } : {};
+}
+
 export const authAPI = {
   // Registrar
   register: async (name, email, password, age) => {
@@ -50,11 +71,17 @@ export const authAPI = {
         body: JSON.stringify({ email, password })
       });
       const data = await response.json();
+      if (data && data.token) setAuthToken(data.token);
       return data;
     } catch (error) {
       console.error('Erro no login:', error);
       return { error: 'Erro ao conectar com servidor' };
     }
+  },
+
+  // Sair (esquece o token)
+  logout: () => {
+    setAuthToken(null);
   },
 
   // Recuperar senha
@@ -79,13 +106,13 @@ export const authAPI = {
 // ==========================================
 
 export const diaryAPI = {
-  // Criar registro
+  // Criar registro (o servidor descobre o dono pelo token)
   create: async (userId, text) => {
     try {
       const response = await fetch(`${API_URL}/diary`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, text })
+        headers: headersJson(),
+        body: JSON.stringify({ text })
       });
       const data = await response.json();
       return data;
@@ -98,7 +125,9 @@ export const diaryAPI = {
   // Listar registros do usuário
   getAll: async (userId) => {
     try {
-      const response = await fetch(`${API_URL}/diary/${userId}`);
+      const response = await fetch(`${API_URL}/diary/${userId}`, {
+        headers: headersAuth()
+      });
       const data = await response.json();
       return data;
     } catch (error) {
@@ -111,7 +140,8 @@ export const diaryAPI = {
   delete: async (id) => {
     try {
       const response = await fetch(`${API_URL}/diary/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: headersAuth()
       });
       const data = await response.json();
       return data;
@@ -127,13 +157,13 @@ export const diaryAPI = {
 // ==========================================
 
 export const postsAPI = {
-  // Criar post
+  // Criar post (o servidor descobre autor e nome pelo token)
   create: async (userId, userName, text) => {
     try {
       const response = await fetch(`${API_URL}/posts`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, userName, text })
+        headers: headersJson(),
+        body: JSON.stringify({ text })
       });
       const data = await response.json();
       return data;
@@ -146,7 +176,9 @@ export const postsAPI = {
   // Listar todos os posts
   getAll: async () => {
     try {
-      const response = await fetch(`${API_URL}/posts`);
+      const response = await fetch(`${API_URL}/posts`, {
+        headers: headersAuth()
+      });
       const data = await response.json();
       return data;
     } catch (error) {
@@ -160,8 +192,8 @@ export const postsAPI = {
     try {
       const response = await fetch(`${API_URL}/posts/${postId}/like`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId })
+        headers: headersJson(),
+        body: JSON.stringify({})
       });
       const data = await response.json();
       return data;
@@ -176,8 +208,8 @@ export const postsAPI = {
     try {
       const response = await fetch(`${API_URL}/posts/${postId}/comment`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, userName, text })
+        headers: headersJson(),
+        body: JSON.stringify({ text })
       });
       const data = await response.json();
       return data;
@@ -191,7 +223,8 @@ export const postsAPI = {
   delete: async (id) => {
     try {
       const response = await fetch(`${API_URL}/posts/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: headersAuth()
       });
       const data = await response.json();
       return data;

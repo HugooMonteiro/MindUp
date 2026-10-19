@@ -440,6 +440,7 @@ export default function App() {
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.button, { backgroundColor: '#E57373' }]} onPress={() => {
+          authAPI.logout();
           setLoggedUser(null);
           setScreen('login');
         }}>

@@ -1,18 +1,34 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
+const User = require('../models/User');
+const auth = require('../middleware/auth');
+
+// Todas as rotas do feed exigem login
+router.use(auth);
+
+// Busca o nome do usuário no banco (não confia no nome enviado pelo app)
+async function nomeDoUsuario(userId) {
+  const user = await User.findById(userId).select('name');
+  return user ? user.name : null;
+}
 
 // Criar post
 router.post('/', async (req, res) => {
   try {
-    const { userId, userName, text } = req.body;
+    const { text } = req.body;
 
     if (!text || text.trim().length < 5) {
       return res.status(400).json({ error: 'O post deve ter pelo menos 5 caracteres!' });
     }
 
+    const userName = await nomeDoUsuario(req.userId);
+    if (!userName) {
+      return res.status(401).json({ error: 'Usuário não encontrado. Faça login novamente.' });
+    }
+
     const post = new Post({
-      userId,
+      userId: req.userId,
       userName,
       text
     });
@@ -42,21 +58,20 @@ router.get('/', async (req, res) => {
 // Curtir/Descurtir post
 router.post('/:id/like', async (req, res) => {
   try {
-    const { userId } = req.body;
     const post = await Post.findById(req.params.id);
 
     if (!post) {
       return res.status(404).json({ error: 'Post não encontrado' });
     }
 
-    const alreadyLiked = post.likedBy.includes(userId);
+    const alreadyLiked = post.likedBy.some(id => id.toString() === req.userId);
 
     if (alreadyLiked) {
-      post.likes -= 1;
-      post.likedBy = post.likedBy.filter(id => id.toString() !== userId);
+      post.likes = Math.max(0, post.likes - 1);
+      post.likedBy = post.likedBy.filter(id => id.toString() !== req.userId);
     } else {
       post.likes += 1;
-      post.likedBy.push(userId);
+      post.likedBy.push(req.userId);
     }
 
     await post.save();
@@ -70,7 +85,7 @@ router.post('/:id/like', async (req, res) => {
 // Adicionar comentário
 router.post('/:id/comment', async (req, res) => {
   try {
-    const { userId, userName, text } = req.body;
+    const { text } = req.body;
 
     if (!text || text.trim().length < 2) {
       return res.status(400).json({ error: 'O comentário deve ter pelo menos 2 caracteres!' });
@@ -82,8 +97,13 @@ router.post('/:id/comment', async (req, res) => {
       return res.status(404).json({ error: 'Post não encontrado' });
     }
 
+    const userName = await nomeDoUsuario(req.userId);
+    if (!userName) {
+      return res.status(401).json({ error: 'Usuário não encontrado. Faça login novamente.' });
+    }
+
     post.comments.push({
-      userId,
+      userId: req.userId,
       userName,
       text
     });
@@ -96,10 +116,15 @@ router.post('/:id/comment', async (req, res) => {
   }
 });
 
-// Deletar post
+// Deletar post (só se for do usuário logado)
 router.delete('/:id', async (req, res) => {
   try {
-    await Post.findByIdAndDelete(req.params.id);
+    const post = await Post.findOneAndDelete({ _id: req.params.id, userId: req.userId });
+
+    if (!post) {
+      return res.status(404).json({ error: 'Post não encontrado' });
+    }
+
     res.json({ message: 'Post deletado!' });
   } catch (error) {
     console.error(error);
