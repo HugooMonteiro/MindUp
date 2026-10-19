@@ -153,7 +153,17 @@ Todas as rotas de /api/diary e /api/posts exigem o cabeçalho Authorization: Bea
   
 ## Prints
 
+<p align="center">
+  <img src="docs/prints/login.png" width="220" alt="Tela de login" />
+  <img src="docs/prints/menu.png" width="220" alt="Menu principal" />
+  <img src="docs/prints/diario.png" width="220" alt="Registro diário" />
+</p>
 
+<p align="center">
+  <img src="docs/prints/feed.png" width="220" alt="Feed comunitário" />
+  <img src="docs/prints/carta-fechada.png" width="220" alt="Carta do Dia antes de escolher" />
+  <img src="docs/prints/carta-aberta.png" width="220" alt="Carta do Dia aberta" />
+</p>
 
 ## Autor
 
