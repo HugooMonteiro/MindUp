@@ -15,7 +15,7 @@ O MindUp ajuda as pessoas a cuidarem da saúde mental no dia a dia:
 
 ## Funcionalidades
 
-- Cadastro, login e recuperação de senha
+- Cadastro e login (a recuperação de senha ainda é simulada, sem envio de email)
 - Validações no app e na API
 - Registro diário privado por usuário
 - Feed com posts públicos
@@ -121,13 +121,15 @@ MindUp/
 ## Segurança
 
 - Senhas guardadas como hash com bcrypt (10 rounds)
-- Autenticação com JWT (expira em 7 dias)
+- Autenticação com JWT (expira em 7 dias), verificada em todas as rotas do diário e do feed
 - Validações no app e na API
 - CORS configurado
 - Segredos em variáveis de ambiente, fora do repositório
 - Registros privados filtrados por usuário
 
 ## API
+
+Todas as rotas de /api/diary e /api/posts exigem o cabeçalho Authorization: Bearer <token>.
 
 | Método | Rota | Descrição |
 | --- | --- | --- |
@@ -143,9 +145,15 @@ MindUp/
 | POST | `/api/posts/:id/comment` | Comentar |
 | DELETE | `/api/posts/:id` | Apagar post |
 
+## Melhorias futuras
+
+- Login persistente, com o token guardado de forma segura no celular
+- Recuperação de senha por email de verdade
+- Limite de tentativas de login
+  
 ## Prints
 
-<!-- Futuramente -->
+
 
 ## Autor
 
