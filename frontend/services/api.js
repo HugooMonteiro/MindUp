@@ -1,8 +1,28 @@
-// IMPORTANTE: Mude este endereço conforme seu caso:
-// - Testando no navegador: use 'http://localhost:3000/api'
-// - Testando no celular físico: use 'http://SEU_IP:3000/api' (ex: http://192.168.1.5:3000/api)
-// - Testando no emulador Android: use 'http://10.0.2.2:3000/api'
-const API_URL = 'http://localhost:3000/api';
+import { Platform } from 'react-native';
+import Constants from 'expo-constants';
+
+// Endereço da API (backend), descoberto automaticamente:
+// - Navegador: usa o mesmo endereço da página (localhost no notebook, o IP no celular)
+// - Expo Go no celular: usa o IP do notebook que está rodando o Expo
+// - Para forçar outro endereço, crie frontend/.env com:
+//   EXPO_PUBLIC_API_URL=http://SEU_ENDERECO:3000/api
+function descobrirApiUrl() {
+  if (process.env.EXPO_PUBLIC_API_URL) return process.env.EXPO_PUBLIC_API_URL;
+
+  if (Platform.OS === 'web') {
+    const host = (typeof window !== 'undefined' && window.location.hostname) || 'localhost';
+    return `http://${host}:3000/api`;
+  }
+
+  const hostUri = Constants.expoConfig && Constants.expoConfig.hostUri;
+  const host = hostUri ? hostUri.split(':')[0] : null;
+  if (host) return `http://${host}:3000/api`;
+
+  // Emulador Android (sem hostUri): o notebook é 10.0.2.2
+  return Platform.OS === 'android' ? 'http://10.0.2.2:3000/api' : 'http://localhost:3000/api';
+}
+
+const API_URL = descobrirApiUrl();
 
 export const authAPI = {
   // Registrar

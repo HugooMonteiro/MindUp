@@ -20,19 +20,20 @@ O MindUp ajuda as pessoas a cuidarem da saúde mental no dia a dia:
 - Registro diário privado por usuário
 - Feed com posts públicos
 - Curtidas (uma por usuário) e comentários
+- **Carta do Dia**: jogo diário de 3 cartas virtuais. Cada pessoa recebe 3 mensagens de apoio diferentes por dia (banco com mais de 400 frases) e pode compartilhar a carta escolhida no feed
 - API RESTful com banco MongoDB Atlas na nuvem
 
 ## Tecnologias
 
 | Camada | Tecnologias |
 | --- | --- |
-| App | React Native, Expo, JavaScript |
+| App | React Native, Expo (SDK 57), JavaScript |
 | API | Node.js, Express, Mongoose, JWT (`jsonwebtoken`), bcrypt, CORS |
 | Banco de dados | MongoDB Atlas |
 
 ## Como rodar
 
-Pré-requisitos: Node.js (versão LTS recente), npm ou yarn, uma conta gratuita no MongoDB Atlas e, para testar no celular, o app Expo Go.
+Pré-requisitos: Node.js 22 (versão LTS), npm ou yarn, uma conta gratuita no MongoDB Atlas e, para testar no celular, o app Expo Go.
 
 ### 1. Clonar o repositório
 
@@ -71,21 +72,20 @@ cd frontend
 npm install
 ```
 
-Em `frontend/services/api.js`, defina o endereço da API:
-
-```js
-// Navegador:
-const API_URL = 'http://localhost:3000/api';
-
-// Celular (use o IP da sua máquina na rede):
-// const API_URL = 'http://192.168.x.x:3000/api';
-```
-
 ```bash
 npx expo start
 ```
 
-Aperte `w` para abrir no navegador, ou escaneie o QR Code com o Expo Go.
+- **Navegador:** aperte `w` (abre em `http://localhost:8081`).
+- **Celular:** instale o app **Expo Go** e escaneie o QR Code (no iPhone, pela câmera; no Android, pelo próprio Expo Go). O celular e o notebook precisam estar na mesma rede Wi-Fi, e o firewall deve permitir o Node em redes privadas.
+
+O app descobre sozinho o endereço da API (backend na porta 3000). Se precisar forçar outro endereço, crie o arquivo `frontend/.env` com:
+
+```
+EXPO_PUBLIC_API_URL=http://SEU_ENDERECO:3000/api
+```
+
+> O Expo Go só abre projetos da mesma versão de SDK que ele. Quando o Expo Go das lojas passar para um SDK mais novo, atualize o projeto com `npx expo install expo@latest --fix`.
 
 ## Como usar
 
@@ -93,6 +93,7 @@ Aperte `w` para abrir no navegador, ou escaneie o QR Code com o Expo Go.
 2. Crie seu primeiro registro diário
 3. Publique algo no feed comunitário
 4. Curta e comente os posts de outras pessoas
+5. Abra a **Carta do Dia** no menu, escolha uma das três cartas e compartilhe a mensagem com a comunidade
 
 ## Estrutura do projeto
 
@@ -106,9 +107,14 @@ MindUp/
 │   ├── .env.example     modelo de variáveis de ambiente
 │   └── package.json
 └── frontend/
+    ├── screens/         telas (Carta do Dia)
+    ├── data/frases.js   banco de frases das cartas
+    ├── utils/cartas.js  sorteio das 3 cartas por pessoa e por dia
     ├── services/api.js  chamadas à API
     ├── assets/          imagens e ícones
     ├── App.js           componente principal
+    ├── index.js         ponto de entrada do Expo
+    ├── app.json         configuração do Expo
     └── package.json
 ```
 

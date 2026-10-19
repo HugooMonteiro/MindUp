@@ -4,6 +4,7 @@ import {
   FlatList, StyleSheet, Alert, ScrollView, Image, ActivityIndicator
 } from 'react-native';
 import { authAPI, diaryAPI, postsAPI } from './services/api';
+import CartasDoDia from './screens/CartasDoDia';
 
 export default function App() {
   const [name, setName] = useState('');
@@ -434,8 +435,8 @@ export default function App() {
           <Text style={styles.buttonText}>🌟 Feed Comunitário</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => setScreen('chatbot')}>
-          <Text style={styles.buttonText}>💬 Chatbot</Text>
+        <TouchableOpacity style={styles.button} onPress={() => setScreen('cartas')}>
+          <Text style={styles.buttonText}>🃏 Carta do Dia</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.button, { backgroundColor: '#E57373' }]} onPress={() => {
@@ -492,18 +493,14 @@ export default function App() {
           ) : diaries.length === 0 ? (
             <Text style={styles.emptyText}>Nenhum registro ainda. Comece a escrever!</Text>
           ) : (
-            <FlatList 
-              data={diaries}
-              keyExtractor={item => item._id}
-              renderItem={({ item }) => (
-                <View style={styles.diaryItem}>
-                  <Text style={styles.diaryDate}>
-                    {new Date(item.date).toLocaleDateString('pt-BR')}
-                  </Text>
-                  <Text style={styles.diaryText}>{item.text}</Text>
-                </View>
-              )}
-            />
+              diaries.map((item) => (
+              <View key={item._id} style={styles.diaryItem}>
+                <Text style={styles.diaryDate}>
+                  {new Date(item.date).toLocaleDateString('pt-BR')}
+                </Text>
+                <Text style={styles.diaryText}>{item.text}</Text>
+              </View>
+            ))
           )}
 
           <TouchableOpacity onPress={() => {
@@ -655,15 +652,13 @@ export default function App() {
     );
   }
 
-  if (screen === 'chatbot') {
+  if (screen === 'cartas') {
     return (
-      <View style={styles.container}>
-        <Text style={styles.label}>Chatbot em construção...</Text>
-        <Text style={styles.subtitle}>Em breve você poderá conversar com nosso assistente de bem-estar!</Text>
-        <TouchableOpacity onPress={() => setScreen('menu')} style={{ marginTop: 20 }}>
-          <Text style={styles.link}>← Voltar ao Menu</Text>
-        </TouchableOpacity>
-      </View>
+      <CartasDoDia
+        user={loggedUser}
+        onBack={() => setScreen('menu')}
+        onGoFeed={() => setScreen('feed')}
+      />
     );
   }
 
@@ -674,7 +669,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    padding: 20, 
+    padding: 20,
+    paddingTop: 100, 
     backgroundColor: '#E7EDED' 
   },
   logo: {
